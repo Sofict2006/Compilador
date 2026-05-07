@@ -57,6 +57,11 @@ module TokenType
 
   EOF        = :EOF
   ILLEGAL    = :ILLEGAL
+
+  # Extras
+  SQRT = :SQRT
+  ROOT = :ROOT
+
 end
 
     """
@@ -102,21 +107,33 @@ end
 # Aqui van las palabras reservadas del lenguaje
 def lookup_token_type(literal)
   keywords = {
-    'function' => TokenType::FUNCTION,
-    'let'      => TokenType::LET,
-    'return'   => TokenType::RETURN,
-    'if'       => TokenType::IF,
-    'elseif'   => TokenType::ELSEIF,
-    'else'     => TokenType::ELSE,
-    'while'    => TokenType::WHILE,
-    'for'      => TokenType::FOR,
+    'mousekeherramienta_misteriosa' => TokenType::FUNCTION,
+    'asignoasigno'      => TokenType::LET,
+    'retornable_como_la_cocacola_retornable'   => TokenType::RETURN,
+    'si_se_porta_bien_hacemos...'       => TokenType::IF,
+    'si_no_se_porta_bien_entonces_hacemos_otra_cosa...'   => TokenType::ELSEIF,
+    'si_no_se_porta_bien_nunca...'     => TokenType::ELSE,
+    'primero_miremos_aver_sisi'    => TokenType::WHILE,
+    'parapapapa'      => TokenType::FOR,
     'detente_jochis'    => TokenType::BREAK,
-    'continue' => TokenType::CONTINUE,
+    'noparesiguesigue_noparesiguesigue' => TokenType::CONTINUE,
     'sipirili'     => TokenType::TRUE,
     'noporolo'    => TokenType::FALSE,
-    'and'      => TokenType::AND,
-    'or'       => TokenType::OR,
-    'print'    => TokenType::PRINT,
+    'Y_un_guarito'      => TokenType::AND,
+    'O_una_polita'       => TokenType::OR,
+    'imprimiendoendo'    => TokenType::PRINT,
+
+    #Cosas de chavos
+    'divisao' => TokenType::DIVISION,
+    'adicao' => TokenType::PLUS,
+    'subtracao' => TokenType::MINUS,
+    'lamamadelamamadelamamadelamamadelamama' => TokenType::POW,
+    'lahijadelahijadelahijadelahijadelahija' => TokenType::ROOT,
+    'lahijadelahija' => TokenType::SQRT,
+    'no_me_importa_que_usted_sea_mayor_que_yo_yo_la_quiero_en_mi_cama' => TokenType::GT,
+    'no_me_importa_que_usted_sea_menor_que_yo' => TokenType::LT,
+
+
   }
     # Busca el literal en el arreglo? diccionario? idk, si no existe devuelve IDENTIFIER
     keywords.fetch(literal, TokenType::IDENTIFIER)

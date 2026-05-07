@@ -5,7 +5,7 @@ require_relative 'Lenguaje_Programacion/repl'
 # Define la función principal del programa
 def main
   # Imprime un mensaje en consola
-  puts "Bienvenido a tu lenguaje de programacion c:"
+  puts "Maldito talento"
   
   # Llama a la función start_repl definida en repl.rb
   start_repl
