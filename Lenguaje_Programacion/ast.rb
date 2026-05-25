@@ -51,12 +51,12 @@ class Statement < Node
   # No necesita nada por ahora.
   # Sirve como "tipo base" para identificar sentencias.
 
-    """
-    Nodo base para SENTENCIAS.
+    # """
+    # Nodo base para SENTENCIAS.
 
-    Las sentencias NO producen un valor por sí mismas; ejecutan una acción.
-    Ejemplos: let x = 5;  return x;  while (...) { ... }
-    """
+    # Las sentencias NO producen un valor por sí mismas; ejecutan una acción.
+    # Ejemplos: let x = 5;  return x;  while (...) { ... }
+    # """
 end
 
 
@@ -65,12 +65,12 @@ end
 # ─────────────────────────────────────────────
 class Expression < Node
   # Igual que Statement, es solo una clase base.
-    """
-    Nodo base para EXPRESIONES.
+    # """
+    # Nodo base para EXPRESIONES.
 
-    Las expresiones SÍ producen un valor.
-    Ejemplos: 5 + 3,  miFuncion(x),  x == y
-    """
+    # Las expresiones SÍ producen un valor.
+    # Ejemplos: 5 + 3,  miFuncion(x),  x == y
+    # """
 end
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -389,13 +389,13 @@ end
 # PREFIX EXPRESSION
 # ─────────────────────────────────────────────
 class PrefixExpression < Expression
-    """
-    Nodo para expresiones con operador PREFIJO: <operador><expresión>
+    # """
+    # Nodo para expresiones con operador PREFIJO: <operador><expresión>
 
-    Ejemplos:
-      !verdadero   →  PrefixExpression(operator='!', right=BooleanLiteral(true))
-      -5           →  PrefixExpression(operator='-', right=IntegerLiteral(5))
-    """
+    # Ejemplos:
+    #   !verdadero   →  PrefixExpression(operator='!', right=BooleanLiteral(true))
+    #   -5           →  PrefixExpression(operator='-', right=IntegerLiteral(5))
+    # """
 
   attr_accessor :token, :operator, :right
 
@@ -418,14 +418,14 @@ end
 # INFIX EXPRESSION
 # ─────────────────────────────────────────────
 class InfixExpression < Expression
-    """
-    Nodo para expresiones con operador INFIJO: <izquierda> <operador> <derecha>
+    # """
+    # Nodo para expresiones con operador INFIJO: <izquierda> <operador> <derecha>
 
-    Ejemplos:
-      5 + 3     →  InfixExpression(left=5, operator='+', right=3)
-      x == y    →  InfixExpression(left=x, operator='==', right=y)
-      a and b   →  InfixExpression(left=a, operator='and', right=b)
-    """
+    # Ejemplos:
+    #   5 + 3     →  InfixExpression(left=5, operator='+', right=3)
+    #   x == y    →  InfixExpression(left=x, operator='==', right=y)
+    #   a and b   →  InfixExpression(left=a, operator='and', right=b)
+    # """
 
   attr_accessor :token, :left, :operator, :right
 
@@ -449,20 +449,21 @@ end
 # IF EXPRESSION
 # ─────────────────────────────────────────────
 class IfExpression < Expression
-    """
-    Nodo para condicionales: if (...) { } elseif (...) { } else { }
+    
+    #Nodo para condicionales: if (...) { } elseif (...) { } else { }
 
-    Soporta múltiples ramas elseif como lista de pares (condición, bloque).
+    #Soporta múltiples ramas elseif como lista de pares (condición, bloque).
 
-    Ejemplo:
-        if (x > 0) {
-            print("positivo");
-        } elseif (x == 0) {
-            print("cero");
-        } else {
-            print("negativo");
-        }
-    """
+    #Ejemplo:
+    #    if (x > 0) {
+    #        print("positivo");
+    #    } elseif (x == 0) {
+    #        print("cero");
+    #    } else {
+    #        print("negativo");
+    #    }
+    
+
   attr_accessor :token, :condition, :consequence, :alternatives, :else_block
 
   def initialize(token, condition, consequence, alternatives = [], else_block = nil)
@@ -496,19 +497,19 @@ end
 # FUNCTION LITERAL
 # ─────────────────────────────────────────────
 class FunctionLiteral < Expression
-    """
-    Nodo para la DEFINICIÓN de una función: function(<parámetros>) { <cuerpo> }
+    # """
+    # Nodo para la DEFINICIÓN de una función: function(<parámetros>) { <cuerpo> }
 
-    Ejemplo:
-        function(x, y) {
-            return x + y;
-        }
+    # Ejemplo:
+    #     function(x, y) {
+    #         return x + y;
+    #     }
 
-    Las funciones en este lenguaje son valores de primera clase:
-    se pueden asignar a variables, pasar como argumentos, etc.
-    La recursión funciona porque el entorno (Environment) guarda
-    la referencia al propio objeto función.
-    """
+    # Las funciones en este lenguaje son valores de primera clase:
+    # se pueden asignar a variables, pasar como argumentos, etc.
+    # La recursión funciona porque el entorno (Environment) guarda
+    # la referencia al propio objeto función.
+    # """
   attr_accessor :token, :parameters, :body, :name
 
   def initialize(token, parameters, body, name = "")
@@ -533,16 +534,16 @@ end
 # CALL EXPRESSION
 # ─────────────────────────────────────────────
 class CallExpression < Expression
-    """
-    Nodo para la LLAMADA a una función: <función>(<argumentos>)
+    # """
+    # Nodo para la LLAMADA a una función: <función>(<argumentos>)
 
-    Ejemplo:
-        factorial(5)
-        suma(x, y + 1)
+    # Ejemplo:
+    #     factorial(5)
+    #     suma(x, y + 1)
 
-    La función puede ser un identificador (nombre) o una expresión
-    que produce una función (e.g. una lambda inmediata).
-    """
+    # La función puede ser un identificador (nombre) o una expresión
+    # que produce una función (e.g. una lambda inmediata).
+    # """
   attr_accessor :token, :function, :arguments
 
   def initialize(token, function, arguments)
@@ -565,11 +566,11 @@ end
 # PRINT STATEMENT
 # ─────────────────────────────────────────────
 class PrintStatement < Statement
-    """
-    Nodo para la sentencia de impresión: print(<expresión>);
+    # """
+    # Nodo para la sentencia de impresión: print(<expresión>);
 
-    Ejemplo: print(x + 1);
-    """
+    # Ejemplo: print(x + 1);
+    # """
   attr_accessor :token, :value
 
   def initialize(token, value)
