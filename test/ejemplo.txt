@@ -1,0 +1,19 @@
+asignoasigno x = 10;
+asignoasigno y = 20;
+asignoasigno suma = x adicao y;
+imprimiendoendo(suma);
+
+si_se_porta_bien_hacemos...(x no_me_importa_que_usted_sea_menor_que_yo y) {
+  imprimiendoendo("x es menor que y");
+} si_no_se_porta_bien_nunca... {
+  imprimiendoendo("x es mayor o igual a y");
+}
+
+asignoasigno factorial = mousekeherramienta_misteriosa(n) {
+  si_se_porta_bien_hacemos...(n == 0) {
+    retornable_como_la_cocacola_retornable 1;
+  }
+  retornable_como_la_cocacola_retornable n * factorial(n subtracao 1);
+};
+
+imprimiendoendo(factorial(5));

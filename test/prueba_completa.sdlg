@@ -1,0 +1,222 @@
+// =============================================================================
+// prueba_completa.sdlg — Archivo de prueba del compilador
+//
+// Este archivo demuestra todas las capacidades del lenguaje:
+//   - Variables (asignoasigno)
+//   - Operaciones aritmeticas y con strings
+//   - Condicionales (si_se_porta_bien_hacemos... / si_no_se_porta_bien_entonces... / si_no...)
+//   - Bucle while (primero_miremos_aver_sisi)
+//   - Bucle for (parapapapa)
+//   - Funciones (mousekeherramienta_misteriosa)
+//   - Funciones recursivas (factorial y fibonacci)
+//   - Break (detente_jochis) y continue (noparesiguesigue_noparesiguesigue) en bucles
+// =============================================================================
+
+
+// ─── 1. VARIABLES Y OPERACIONES BASICAS ──────────────────────────────────────
+
+imprimiendoendo("=== Variables y Aritmetica ===");
+
+asignoasigno x = 10;
+asignoasigno y = 3;
+
+imprimiendoendo(x + y);      // 13
+imprimiendoendo(x - y);      // 7
+imprimiendoendo(x * y);      // 30
+imprimiendoendo(x / y);      // 3
+imprimiendoendo(x % y);      // 1
+imprimiendoendo(2 ^ 8);      // 256
+
+// Strings
+asignoasigno nombre = "Laura";
+asignoasigno saludo = "Hola, " + nombre + "!";
+imprimiendoendo(saludo);     // Hola, Laura!
+
+// Flotantes
+asignoasigno pi = 3.14159;
+asignoasigno radio = 5.0;
+asignoasigno area = pi * radio * radio;
+imprimiendoendo(area);       // ~78.53...
+
+
+// ─── 2. CONDICIONALES ────────────────────────────────────────────────────────
+
+imprimiendoendo("=== Condicionales ===");
+
+asignoasigno temperatura = 22;
+
+si_se_porta_bien_hacemos...(temperatura > 30) {
+    imprimiendoendo("Hace calor");
+} si_no_se_porta_bien_entonces_hacemos_otra_cosa...(temperatura > 20) {
+    imprimiendoendo("Temperatura agradable");
+} si_no_se_porta_bien_entonces_hacemos_otra_cosa...(temperatura > 10) {
+    imprimiendoendo("Hace un poco de frio");
+} si_no_se_porta_bien_nunca... {
+    imprimiendoendo("Hace mucho frio");
+}
+
+// Operadores logicos
+asignoasigno tiene_sol = sipirili;
+asignoasigno es_fin_de_semana = noporolo;
+
+si_se_porta_bien_hacemos...(tiene_sol Y_un_guarito !es_fin_de_semana) {
+    imprimiendoendo("Buen dia laboral con sol");
+}
+
+si_se_porta_bien_hacemos...(tiene_sol O_una_polita es_fin_de_semana) {
+    imprimiendoendo("Hay algo bueno hoy");
+}
+
+
+// ─── 3. BUCLE WHILE ──────────────────────────────────────────────────────────
+
+imprimiendoendo("=== Bucle While (contar del 1 al 5) ===");
+
+asignoasigno i = 1;
+primero_miremos_aver_sisi (i <= 5) {
+    imprimiendoendo(i);
+    asignoasigno i = i + 1;
+}
+
+// While con break
+imprimiendoendo("=== While con break ===");
+asignoasigno n = 0;
+primero_miremos_aver_sisi (sipirili) {
+    asignoasigno n = n + 1;
+    si_se_porta_bien_hacemos...(n == 4) {
+        detente_jochis;
+    }
+    imprimiendoendo(n);
+}
+
+
+// ─── 4. BUCLE FOR ────────────────────────────────────────────────────────────
+
+imprimiendoendo("=== Bucle For (cuadrados del 1 al 6) ===");
+
+parapapapa (asignoasigno j = 1; j <= 6; asignoasigno j = j + 1) {
+    imprimiendoendo(j * j);
+}
+
+// For con continue (saltar numeros pares)
+imprimiendoendo("=== For con continue (solo impares del 1 al 9) ===");
+parapapapa (asignoasigno k = 1; k <= 9; asignoasigno k = k + 1) {
+    si_se_porta_bien_hacemos...(k % 2 == 0) {
+        noparesiguesigue_noparesiguesigue;
+    }
+    imprimiendoendo(k);
+}
+
+
+// ─── 5. FUNCIONES ────────────────────────────────────────────────────────────
+
+imprimiendoendo("=== Funciones ===");
+
+// Funcion simple: suma dos numeros
+asignoasigno suma = mousekeherramienta_misteriosa(a, b) {
+    retornable_como_la_cocacola_retornable a + b;
+};
+
+asignoasigno resultado = suma(7, 8);
+imprimiendoendo(resultado);   // 15
+
+// Funcion que devuelve el mayor de dos numeros
+asignoasigno maximo = mousekeherramienta_misteriosa(a, b) {
+    si_se_porta_bien_hacemos...(a >= b) {
+        retornable_como_la_cocacola_retornable a;
+    } si_no_se_porta_bien_nunca... {
+        retornable_como_la_cocacola_retornable b;
+    }
+};
+
+imprimiendoendo(maximo(10, 25));   // 25-
+imprimiendoendo(maximo(99, 50));   // 99
+
+
+// ─── 6. FUNCIONES RECURSIVAS ─────────────────────────────────────────────────
+
+imprimiendoendo("=== Factorial (recursion) ===");
+
+asignoasigno factorial = mousekeherramienta_misteriosa(n) {
+    si_se_porta_bien_hacemos...(n == 0) {
+        retornable_como_la_cocacola_retornable 1;
+    }
+    retornable_como_la_cocacola_retornable n * factorial(n - 1);
+};
+
+imprimiendoendo(factorial(0));    // 1
+imprimiendoendo(factorial(1));    // 1
+imprimiendoendo(factorial(5));    // 120
+imprimiendoendo(factorial(10));   // 3628800
+
+
+imprimiendoendo("=== Fibonacci (iterativo) ===");
+
+asignoasigno fibonacci = mousekeherramienta_misteriosa(n) {
+    si_se_porta_bien_hacemos...(n == 0) {
+        retornable_como_la_cocacola_retornable 0;
+    }
+    si_se_porta_bien_hacemos...(n == 1) {
+        retornable_como_la_cocacola_retornable 1;
+    }
+    asignoasigno a = 0;
+    asignoasigno b = 1;
+    asignoasigno i = 2;
+    primero_miremos_aver_sisi (i <= n) {
+        asignoasigno temp = a + b;
+        asignoasigno a = b;
+        asignoasigno b = temp;
+        asignoasigno i = i + 1;
+    }
+    retornable_como_la_cocacola_retornable b;
+};
+
+// Imprimir los primeros 10 numeros de Fibonacci
+parapapapa (asignoasigno idx = 0; idx <= 9; asignoasigno idx = idx + 1) {
+    imprimiendoendo(fibonacci(idx));
+}
+
+
+// ─── 7. FUNCIONES DE ORDEN SUPERIOR Y CLOSURES ───────────────────────────────
+
+imprimiendoendo("=== Contador (closure) ===");
+
+asignoasigno hacer_contador = mousekeherramienta_misteriosa(inicio) {
+    asignoasigno contador_fn = mousekeherramienta_misteriosa() {
+        retornable_como_la_cocacola_retornable inicio;
+    };
+    retornable_como_la_cocacola_retornable contador_fn;
+};
+
+asignoasigno contar_desde_10 = hacer_contador(10);
+imprimiendoendo(contar_desde_10());   // 10
+
+
+// ─── 8. CALCULOS COMPUESTOS ─────────────────────────────────────────────────
+
+imprimiendoendo("=== Calculos varios ===");
+
+// Verificar si un numero es primo (iterativo)
+asignoasigno es_primo = mousekeherramienta_misteriosa(num) {
+    si_se_porta_bien_hacemos...(num < 2) {
+        retornable_como_la_cocacola_retornable noporolo;
+    }
+    asignoasigno divisor = 2;
+    primero_miremos_aver_sisi (divisor * divisor <= num) {
+        si_se_porta_bien_hacemos...(num % divisor == 0) {
+            retornable_como_la_cocacola_retornable noporolo;
+        }
+        asignoasigno divisor = divisor + 1;
+    }
+    retornable_como_la_cocacola_retornable sipirili;
+};
+
+// Imprimir los primos del 2 al 20
+imprimiendoendo("Primos entre 2 y 20:");
+parapapapa (asignoasigno p = 2; p <= 20; asignoasigno p = p + 1) {
+    si_se_porta_bien_hacemos...(es_primo(p)) {
+        imprimiendoendo(p);
+    }
+}
+
+imprimiendoendo("Programa terminado!");

@@ -1,13 +1,11 @@
 # =============================================================================
 # lexer.rb — Analizador Léxico (Lexer / Scanner)
 #
-# El Lexer es la primera etapa del intérprete. Su trabajo es leer el código
-# fuente carácter a carácter y agruparlos en TOKENS significativos.
-#
-# Ejemplo de transformación:
-#   Código fuente: let x = 10 + 5;
-#   Tokens:  [LET 'let'] [IDENT 'x'] [ASSIGN '='] [INT '10']
-#            [PLUS '+'] [INT '5'] [SEMICOLON ';'] [EOF '']
+# FIXES APLICADOS:
+#   VULN-13: '.' ya no es una letra válida en identificadores
+#   VULN-13: Los sufijos '...' de keywords se manejan explícitamente
+#   VULN-14: Soporte de escape sequences: \n \t \r \" \\
+#   VULN-20: El lexer rastrea número de línea y lo pasa a cada token
 # =============================================================================
 
 require_relative 'tokens'
@@ -17,12 +15,12 @@ class Lexer
   def initialize(source)
     @source = source
     @character = ''
-    @position = 0
+    @position  = 0
     @read_position = 0
+    @line = 1   # [FIX VULN-20] rastreo de línea actual
 
     _read_character
   end
-
 
   # ─────────────────────────────────────────────────────────────────────────
   # MÉTODO PRINCIPAL
@@ -30,95 +28,95 @@ class Lexer
   def next_token
     _skip_whitespace_and_comments
 
-    # nil en ruby es como vacio, asi sin nada
+    current_line = @line   # [FIX VULN-20] capturamos la línea del token
     token = nil
 
     case @character
 
     when ''
-      token = Token.new(TokenType::EOF, '')
+      token = Token.new(TokenType::EOF, '', current_line)
 
     when '+'
-      token = Token.new(TokenType::PLUS, @character)
+      token = Token.new(TokenType::PLUS, @character, current_line)
 
     when '-'
-      token = Token.new(TokenType::MINUS, @character)
+      token = Token.new(TokenType::MINUS, @character, current_line)
 
     when '*'
-      token = Token.new(TokenType::MULTIPLY, @character)
+      token = Token.new(TokenType::MULTIPLY, @character, current_line)
 
     when '/'
-      token = Token.new(TokenType::DIVISION, @character)
+      token = Token.new(TokenType::DIVISION, @character, current_line)
 
     when '%'
-      token = Token.new(TokenType::MOD, @character)
+      token = Token.new(TokenType::MOD, @character, current_line)
 
     when '^'
-      token = Token.new(TokenType::POW, @character)
+      token = Token.new(TokenType::POW, @character, current_line)
 
     when '='
       if _peek_character == '='
-        token = _make_two_character_token(TokenType::EQ)
+        token = _make_two_character_token(TokenType::EQ, current_line)
       else
-        token = Token.new(TokenType::ASSIGN, @character)
+        token = Token.new(TokenType::ASSIGN, @character, current_line)
       end
 
     when '!'
       if _peek_character == '='
-        token = _make_two_character_token(TokenType::DIF)
+        token = _make_two_character_token(TokenType::DIF, current_line)
       else
-        token = Token.new(TokenType::NEGATION, @character)
+        token = Token.new(TokenType::NEGATION, @character, current_line)
       end
 
     when '<'
       if _peek_character == '='
-        token = _make_two_character_token(TokenType::LTE)
+        token = _make_two_character_token(TokenType::LTE, current_line)
       else
-        token = Token.new(TokenType::LT, @character)
+        token = Token.new(TokenType::LT, @character, current_line)
       end
 
     when '>'
       if _peek_character == '='
-        token = _make_two_character_token(TokenType::GTE)
+        token = _make_two_character_token(TokenType::GTE, current_line)
       else
-        token = Token.new(TokenType::GT, @character)
+        token = Token.new(TokenType::GT, @character, current_line)
       end
 
     when ','
-      token = Token.new(TokenType::COMMA, @character)
+      token = Token.new(TokenType::COMMA, @character, current_line)
 
     when ';'
-      token = Token.new(TokenType::SEMICOLON, @character)
+      token = Token.new(TokenType::SEMICOLON, @character, current_line)
 
     when '('
-      token = Token.new(TokenType::LPAREN, @character)
+      token = Token.new(TokenType::LPAREN, @character, current_line)
 
     when ')'
-      token = Token.new(TokenType::RPAREN, @character)
+      token = Token.new(TokenType::RPAREN, @character, current_line)
 
     when '{'
-      token = Token.new(TokenType::LBRACE, @character)
+      token = Token.new(TokenType::LBRACE, @character, current_line)
 
     when '}'
-      token = Token.new(TokenType::RBRACE, @character)
+      token = Token.new(TokenType::RBRACE, @character, current_line)
 
     when '"'
+      # [FIX VULN-14] _read_string ahora maneja escape sequences
       str_content = _read_string
-      return Token.new(TokenType::STRING, str_content)
+      return Token.new(TokenType::STRING, str_content, current_line)
 
     else
       if _is_letter(@character)
-        literal = _read_identifier
+        literal    = _read_identifier
         token_type = lookup_token_type(literal)
-        return Token.new(token_type, literal)
+        return Token.new(token_type, literal, current_line)
 
-      #Este condicional raro dice: Si el caracter es un digito del 0-9 (/\d/) entonces que lea el numero completo
       elsif @character =~ /\d/
         literal, token_type = _read_number
-        return Token.new(token_type, literal)
+        return Token.new(token_type, literal, current_line)
 
       else
-        token = Token.new(TokenType::ILLEGAL, @character)
+        token = Token.new(TokenType::ILLEGAL, @character, current_line)
       end
     end
 
@@ -130,14 +128,19 @@ class Lexer
   # ─────────────────────────────────────────────────────────────────────────
   # MÉTODOS AUXILIARES
   # ─────────────────────────────────────────────────────────────────────────
+  private
+
   def _read_character
+    # [FIX VULN-20] incrementamos la línea cuando PASAMOS una nueva línea
+    @line += 1 if @character == "\n"
+
     if @read_position >= @source.length
       @character = ''
     else
       @character = @source[@read_position]
     end
 
-    @position = @read_position
+    @position      = @read_position
     @read_position += 1
   end
 
@@ -146,43 +149,57 @@ class Lexer
     @source[@read_position]
   end
 
-  def _make_two_character_token(token_type)
+  # Para detectar el sufijo '...' necesitamos ver 2 posiciones adelante
+  def _peek_next_character
+    return '' if @read_position + 1 >= @source.length
+    @source[@read_position + 1]
+  end
+
+  def _make_two_character_token(token_type, line)
     prefix = @character
     _read_character
     suffix = @character
-    Token.new(token_type, "#{prefix}#{suffix}")
+    Token.new(token_type, "#{prefix}#{suffix}", line)
   end
 
   def _skip_whitespace_and_comments
     loop do
       if @character =~ /\s/
         _read_character
-
       elsif @character == '/' && _peek_character == '/'
         while @character != "\n" && @character != ''
           _read_character
         end
-
       else
         break
       end
     end
   end
 
+  # [FIX VULN-13] El punto '.' ya NO es una letra válida en identificadores
   def _is_letter(ch)
     ch =~ /[a-zA-Z]/ || ch == '_'
   end
 
   def _read_identifier
     start = @position
-    while _is_letter(@character) || @character =~ /\d/
+    while _is_letter(@character) || (@character =~ /\d/ && @position > start)
       _read_character
     end
-    @source[start...@position]
+    literal = @source[start...@position]
+
+    # [FIX VULN-13] Detectamos el sufijo '...' de keywords como
+    # si_se_porta_bien_hacemos... sin permitir puntos arbitrarios
+    if @character == '.' && _peek_character == '.' && _peek_next_character == '.'
+      3.times { _read_character }
+      literal += '...'
+    end
+
+    literal
   end
 
   def _read_number
-    start = @position
+    start      = @position
     token_type = TokenType::INTEGER
 
     while @character =~ /\d/
@@ -201,17 +218,30 @@ class Lexer
     [literal, token_type]
   end
 
+  # [FIX VULN-14] Soporte de escape sequences: \n \t \r \" \\
   def _read_string
-    _read_character
-    start = @position
+    _read_character   # saltar la comilla de apertura
+    result = ''
 
     while @character != '"' && @character != ''
+      if @character == '\\'
+        _read_character
+        case @character
+        when 'n'  then result += "\n"
+        when 't'  then result += "\t"
+        when 'r'  then result += "\r"
+        when '"'  then result += '"'
+        when '\\' then result += '\\'
+        else           result += "\\#{@character}"
+        end
+      else
+        result += @character
+      end
       _read_character
     end
 
-    literal = @source[start...@position]
-    _read_character
-    literal
+    _read_character   # saltar la comilla de cierre
+    result
   end
-  
+
 end

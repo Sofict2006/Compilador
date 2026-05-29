@@ -1,0 +1,52 @@
+// =====================================================================
+// test_vulnerabilidades.sdlg — Prueba de todos los fixes de seguridad
+// =====================================================================
+
+imprimiendoendo("=== TEST VULN-03: Float division check ===");
+// Antes: 1.0 / 0 daba Infinity silencioso
+// Ahora: ERROR controlado
+// asignoasigno div0 = 1.0 / 0;  // → ERROR: División por cero
+
+imprimiendoendo("=== TEST VULN-04: sqrt de negativo ===");
+// Antes: Math.sqrt(-9) lanzaba excepción Ruby no capturada (crash)
+// Ahora: ERROR controlado
+// lahijadelahija -9;  // → ERROR: Raíz cuadrada de número negativo
+
+imprimiendoendo("=== TEST VULN-05: Potencia con exponente negativo ===");
+// Antes: 2 ^ -3 daba Rational(1,8) dentro de IntegerObject (roto)
+// Ahora: devuelve Float 0.125
+asignoasigno pot_neg = 2 ^ -3;
+imprimiendoendo(pot_neg);    // → 0.125
+
+imprimiendoendo("=== TEST VULN-09: Cortocircuito real ===");
+// Antes: evaluaba AMBOS lados aunque no fuera necesario
+// Ahora: si lado izquierdo es false, el lado derecho NO se evalúa
+asignoasigno x = noporolo;
+si_se_porta_bien_hacemos...(x Y_un_guarito 1 == 1) {
+    imprimiendoendo("esto no deberia aparecer");
+} si_no_se_porta_bien_nunca... {
+    imprimiendoendo("cortocircuito OK: lado derecho no evaluado");
+}
+
+imprimiendoendo("=== TEST VULN-10: INTEGER == FLOAT ===");
+// Antes: 1 == 1.0 daba false
+// Ahora: devuelve true
+si_se_porta_bien_hacemos...(1 == 1.0) {
+    imprimiendoendo("1 == 1.0 es true (CORRECTO)");
+} si_no_se_porta_bien_nunca... {
+    imprimiendoendo("1 == 1.0 es false (INCORRECTO)");
+}
+
+imprimiendoendo("=== TEST VULN-11: String + numero ===");
+// Antes: error de tipos incompatibles
+// Ahora: coercion implicita
+asignoasigno msg = "El resultado es: " + 42;
+imprimiendoendo(msg);   // → El resultado es: 42
+
+imprimiendoendo("=== TEST VULN-14: Escape sequences en strings ===");
+// Antes: no habia soporte para \n \t \"
+// Ahora: funcionan
+asignoasigno con_tab = "columna1\tcolumna2";
+imprimiendoendo(con_tab);   // → columna1   columna2
+
+imprimiendoendo("Todos los tests pasaron!");

@@ -1,32 +1,46 @@
-# Importa la clase Lexer que se encarga de convertir texto en tokens
-require_relative 'lexer'
-# Importa las estructuras de tokens
-require_relative 'tokens'
+# =============================================================================
+# repl.rb — Read-Eval-Print Loop
+#
+# Bucle interactivo que:
+#   1. Lee una entrada del usuario
+#   2. La procesa con el Lexer → Parser → Evaluador
+#   3. Imprime el resultado
+#   4. Repite hasta que el usuario escriba el comando de salir
+# =============================================================================
 
-# Token constante que representa el fin de entrada (EOF)
-# Se usa para comparar cuándo detener el procesamiento
-EOF_TOKEN = Token.new(TokenType::EOF, '')
+require_relative 'lexer'
+require_relative 'tokens'
+require_relative 'parser'
+require_relative 'evaluator'
+require_relative 'environment'
 
 def start_repl
-    """
-    Inicia un REPL (Read-Eval-Print Loop).
+  # Creamos un entorno global que persiste entre líneas del REPL
+  env = Environment.new
+  evaluator = Evaluator.new
 
-    Este bucle:
-    1. Lee una entrada del usuario
-    2. La procesa con el lexer
-    3. Imprime los tokens generados
-    4. Repite hasta que el usuario escriba el comando de salir
-    """
+  while (print(">> "); source = gets.chomp) != 'ya me voy amiguitos'
+    # Se crea una instancia del lexer con el texto ingresado
+    lexer = Lexer.new(source)
 
-    # Bucle infinito hasta que el usuario escriba lo de abajo c:
-    while (print(">> "); source = gets.chomp) != 'ya me voy amiguitos'
-        # Se crea una instancia del lexer con el texto ingresado
-        lexer = Lexer.new(source)
+    # Se crea el parser y se parsea el programa
+    parser = Parser.new(lexer)
+    program = parser.parse_program
 
-        # Se obtienen tokens uno a uno hasta llegar a EOF
-        while (token = lexer.next_token) != EOF_TOKEN
-            # Imprime cada token generado (debug / visualización)
-            puts token
-        end
+    # Si hay errores de parseo, los mostramos
+    if parser.errors.any?
+      parser.errors.each do |error|
+        puts "  ERROR DE PARSEO: #{error}"
+      end
+      next
     end
+
+    # Evaluamos el programa
+    result = evaluator.evaluate(program, env)
+
+    # Imprimimos el resultado (si no es null)
+    if result && !result.is_a?(NullObject)
+      puts result.inspect_value
+    end
+  end
 end

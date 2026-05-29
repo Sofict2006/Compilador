@@ -1,0 +1,9 @@
+{
+  "files.associations": {
+    "*.sdlg": "sdlg"
+  },
+  "code-runner.executorMapByFileExtension": {
+    ".sdlg": "ruby $workspaceRoot/main.rb $fullFileName"
+  },
+  "code-runner.runInTerminal": true
+}
